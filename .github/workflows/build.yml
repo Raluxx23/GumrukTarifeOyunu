@@ -15,15 +15,17 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Install MAUI iOS Workload
-        run: dotnet workload install maui-ios
+      - name: Restore Workloads
+        run: dotnet workload restore
 
-      - name: Build and Package IPA
+      - name: Build and Package iOS App
         run: |
-          dotnet publish -f net8.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true
+          dotnet publish -f net8.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableCodeSigning=false
 
-      - name: Upload IPA Artifact
+      - name: Upload IPA / App Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: GumrukTarifeOyunu-IPA
-          path: '**/bin/Release/net8.0-ios/ios-arm64/publish/*.ipa'
+          name: GumrukTarifeOyunu-iOS
+          path: |
+            **/bin/Release/net8.0-ios/ios-arm64/publish/*.ipa
+            **/bin/Release/net8.0-ios/ios-arm64/publish/*.app
