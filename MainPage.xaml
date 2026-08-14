@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:GumrukTarifeOyunu"
+             x:Class="GumrukTarifeOyunu.MainPage"
+             Title="Gümrük Tarife Sınavı (Fasıl 01-24)"
+             BackgroundColor="#121212">
+
+    <ScrollView>
+        <VerticalStackLayout Spacing="12" Padding="16">
+
+            <!-- ÜST AYARLAR -->
+            <Grid ColumnDefinitions="*, Auto" RowDefinitions="Auto, Auto" ColumnSpacing="10" RowSpacing="6">
+                <Picker x:Name="PckTheme" Title="Tema Seç" SelectedIndexChanged="OnThemeChanged" TextColor="White" TitleColor="Gray">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Siyah / Beyaz</x:String>
+                            <x:String>Sarı / Siyah</x:String>
+                            <x:String>Mavi / Beyaz</x:String>
+                            <x:String>Yeşil / Beyaz</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+
+                <HorizontalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="6">
+                    <Label Text="Kod -> Tanım" TextColor="White" VerticalOptions="Center" FontSize="12"/>
+                    <Switch Toggled="OnLanguageModeChanged" />
+                </HorizontalStackLayout>
+
+                <HorizontalStackLayout Grid.Row="1" Grid.ColumnSpan="2" Spacing="8" VerticalOptions="Center">
+                    <CheckBox CheckedChanged="OnReviewModeChanged" Color="#3498DB"/>
+                    <Label Text="Yalnızca Yanlış Bildiklerimi Sor" TextColor="LightGray" VerticalOptions="Center" FontSize="13"/>
+                </HorizontalStackLayout>
+            </Grid>
+
+            <!-- FASIL BÖLÜM FİLTRELERİ (BÖLÜM 1 - 4) -->
+            <Label Text="Bölüm Filtreleri (Fasıl 01 - 24):" TextColor="#BDC3C7" FontSize="13" FontAttributes="Bold"/>
+            <FlexLayout Wrap="Wrap" JustifyContent="Start" AlignItems="Center">
+                <HorizontalStackLayout Margin="0,0,10,5">
+                    <CheckBox x:Name="ChkSection1" IsChecked="True" CheckedChanged="OnFilterChanged" Color="#E74C3C"/>
+                    <Label Text="Bölüm I: Canlı Hayvan &amp; Ürünleri (01-05)" TextColor="White" VerticalOptions="Center" FontSize="11"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Margin="0,0,10,5">
+                    <CheckBox x:Name="ChkSection2" IsChecked="True" CheckedChanged="OnFilterChanged" Color="#2ECC71"/>
+                    <Label Text="Bölüm II: Bitkisel Ürünler (06-14)" TextColor="White" VerticalOptions="Center" FontSize="11"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Margin="0,0,10,5">
+                    <CheckBox x:Name="ChkSection3" IsChecked="True" CheckedChanged="OnFilterChanged" Color="#F39C12"/>
+                    <Label Text="Bölüm III: Katı &amp; Sıvı Yağlar (15)" TextColor="White" VerticalOptions="Center" FontSize="11"/>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout Margin="0,0,10,5">
+                    <CheckBox x:Name="ChkSection4" IsChecked="True" CheckedChanged="OnFilterChanged" Color="#9B59B6"/>
+                    <Label Text="Bölüm IV: Gıda, İçecek &amp; Tütün (16-24)" TextColor="White" VerticalOptions="Center" FontSize="11"/>
+                </HorizontalStackLayout>
+            </FlexLayout>
+
+            <!-- DURUM BİLGİSİ -->
+            <Grid ColumnDefinitions="*, Auto, Auto" Margin="0,5">
+                <Label x:Name="LblStatus" Text="Soru: 0/0 | Doğru: 0" TextColor="#F1C40F" FontAttributes="Bold" VerticalOptions="Center"/>
+                <Button Grid.Column="1" Text="🔊" Clicked="OnSpeakClicked" BackgroundColor="#2C3E50" TextColor="White" Margin="0,0,5,0" Padding="8,0" HeightRequest="36"/>
+                <Button Grid.Column="2" Text="➕ Deftere Ekle" Clicked="OnAddToNotebookClicked" BackgroundColor="#2C3E50" TextColor="White" FontSize="12" HeightRequest="36"/>
+            </Grid>
+
+            <!-- SORU ALANI -->
+            <Border Stroke="#34495E" StrokeThickness="2" BackgroundColor="#1E272E" Padding="15" StrokeShape="RoundRectangle 10">
+                <Label x:Name="LblEnglishWord" Text="Soru Yükleniyor..." TextColor="White" FontSize="16" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+            </Border>
+
+            <!-- SEÇENEKLER -->
+            <VerticalStackLayout Spacing="8" Margin="0,5">
+                <Border Stroke="#34495E" StrokeShape="RoundRectangle 8" BackgroundColor="{Binding OptionBgColor}" Padding="10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnOptionTapped" CommandParameter="0"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto, *, Auto">
+                        <Label x:Name="Rb1" Text="○" TextColor="{Binding OptionTextColor}" FontSize="16" VerticalOptions="Center" Margin="0,0,8,0"/>
+                        <Label Grid.Column="1" x:Name="LblOpt1" Text="Seçenek 1" TextColor="{Binding OptionTextColor}" FontSize="13" VerticalOptions="Center"/>
+                        <Label Grid.Column="2" x:Name="LblResult1" Text="✔" TextColor="LightGreen" FontSize="16" IsVisible="False"/>
+                    </Grid>
+                </Border>
+
+                <Border Stroke="#34495E" StrokeShape="RoundRectangle 8" BackgroundColor="{Binding OptionBgColor}" Padding="10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnOptionTapped" CommandParameter="1"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto, *, Auto">
+                        <Label x:Name="Rb2" Text="○" TextColor="{Binding OptionTextColor}" FontSize="16" VerticalOptions="Center" Margin="0,0,8,0"/>
+                        <Label Grid.Column="1" x:Name="LblOpt2" Text="Seçenek 2" TextColor="{Binding OptionTextColor}" FontSize="13" VerticalOptions="Center"/>
+                        <Label Grid.Column="2" x:Name="LblResult2" Text="✔" TextColor="LightGreen" FontSize="16" IsVisible="False"/>
+                    </Grid>
+                </Border>
+
+                <Border Stroke="#34495E" StrokeShape="RoundRectangle 8" BackgroundColor="{Binding OptionBgColor}" Padding="10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnOptionTapped" CommandParameter="2"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto, *, Auto">
+                        <Label x:Name="Rb3" Text="○" TextColor="{Binding OptionTextColor}" FontSize="16" VerticalOptions="Center" Margin="0,0,8,0"/>
+                        <Label Grid.Column="1" x:Name="LblOpt3" Text="Seçenek 3" TextColor="{Binding OptionTextColor}" FontSize="13" VerticalOptions="Center"/>
+                        <Label Grid.Column="2" x:Name="LblResult3" Text="✔" TextColor="LightGreen" FontSize="16" IsVisible="False"/>
+                    </Grid>
+                </Border>
+
+                <Border Stroke="#34495E" StrokeShape="RoundRectangle 8" BackgroundColor="{Binding OptionBgColor}" Padding="10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnOptionTapped" CommandParameter="3"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="Auto, *, Auto">
+                        <Label x:Name="Rb4" Text="○" TextColor="{Binding OptionTextColor}" FontSize="16" VerticalOptions="Center" Margin="0,0,8,0"/>
+                        <Label Grid.Column="1" x:Name="LblOpt4" Text="Seçenek 4" TextColor="{Binding OptionTextColor}" FontSize="13" VerticalOptions="Center"/>
+                        <Label Grid.Column="2" x:Name="LblResult4" Text="✔" TextColor="LightGreen" FontSize="16" IsVisible="False"/>
+                    </Grid>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- CEVAP SONUCU & SONRAKİ SORU -->
+            <Label x:Name="LblOverallResult" Text="" FontSize="14" FontAttributes="Bold" HorizontalTextAlignment="Center" Margin="0,2"/>
+            <Button x:Name="BtnNext" Text="SONRAKİ SORU ➔" Clicked="LoadNextQuestion" BackgroundColor="#27AE60" TextColor="White" FontAttributes="Bold" HeightRequest="45" IsVisible="False"/>
+
+            <!-- DEFTER VE TÜM LİSTE BUTONLARI -->
+            <Grid ColumnDefinitions="*, *" ColumnSpacing="8" Margin="0,10,0,0">
+                <Button Text="DEFTERİM" Clicked="OnOpenNotebookClicked" BackgroundColor="#8E44AD" TextColor="White"/>
+                <Button Text="TÜM LİSTE" Clicked="OnToggleWordListClicked" BackgroundColor="#D35400" TextColor="White"/>
+            </Grid>
+
+            <!-- ARAMA VE TÜM LİSTE GÖRÜNÜMÜ -->
+            <VerticalStackLayout x:Name="LayoutAllWordsList" IsVisible="False" Spacing="8" Margin="0,10">
+                <SearchBar Placeholder="GTİP Pozisyon No (örn: 01.01) veya Eşya Ara..." TextChanged="OnSearchWordChanged" TextColor="White" PlaceholderColor="Gray"/>
+                <CollectionView x:Name="ColAllWords" HeightRequest="300">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="local:CustomsTariff">
+                            <Border Stroke="#2C3E50" Margin="0,2" Padding="8" BackgroundColor="#1E272E">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding Code}" TextColor="#F39C12" FontAttributes="Bold" FontSize="14"/>
+                                    <Label Text="{Binding Description}" TextColor="White" FontSize="12"/>
+                                    <Label Text="{Binding Chapter}" TextColor="Gray" FontSize="10"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
