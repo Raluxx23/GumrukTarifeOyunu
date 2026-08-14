@@ -10,6 +10,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Select Xcode 16
+        run: |
+          sudo xcode-select -s /Applications/Xcode_16.0.app/Contents/Developer
+          echo "DEVELOPER_DIR=/Applications/Xcode_16.0.app/Contents/Developer" >> $GITHUB_ENV
+
       - name: Setup .NET 9
         uses: actions/setup-dotnet@v4
         with:
@@ -20,7 +25,7 @@ jobs:
 
       - name: Build iOS Application
         run: |
-          dotnet publish -f net9.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableCodeSigning=false -p:_SuppressXcodeVersionCheck=true
+          dotnet publish -f net9.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableCodeSigning=false
 
       - name: Package IPA
         run: |
