@@ -25,7 +25,7 @@ jobs:
 
       - name: Build iOS Application
         run: |
-          dotnet publish -f net9.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableCodeSigning=false
+          dotnet publish -f net9.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableCodeSigning=false -p:ValidateXcodeVersion=false
 
       - name: Package IPA
         run: |
