@@ -15,14 +15,14 @@ jobs:
         with:
           dotnet-version: '8.0.x'
 
-      - name: Install MAUI Workload
-        run: dotnet workload install maui-ios
+      - name: Install Workloads
+        run: dotnet workload restore
 
-      - name: Build iOS App
+      - name: Build iOS
         run: |
-          dotnet build -c Release -p:TargetFrameworks=net8.0-ios -p:RuntimeIdentifier=ios-arm64 -p:EnableCodeSigning=false
+          dotnet publish -f net8.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableCodeSigning=false
 
-      - name: Create IPA Package
+      - name: Package IPA
         run: |
           mkdir -p Payload
           APP_PATH=$(find . -name "*.app" -type d | head -n 1)
@@ -30,10 +30,10 @@ jobs:
             cp -r "$APP_PATH" Payload/
             zip -r GumrukTarifeOyunu.ipa Payload
           else
-            echo "App dosyasi bulunamadi!" && exit 1
+            echo "App dosyasi bulunamadi" && exit 1
           fi
 
-      - name: Upload IPA Artifact
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
           name: GumrukTarifeOyunu-IPA
