@@ -10,19 +10,19 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Setup .NET
+      - name: Setup .NET 9
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
 
       - name: Install MAUI iOS Workload
         run: dotnet workload install maui-ios
 
       - name: Build iOS Application
         run: |
-          dotnet publish -f net8.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableCodeSigning=false
+          dotnet publish -f net9.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableCodeSigning=false
 
-      - name: Create IPA Package
+      - name: Package IPA
         run: |
           mkdir -p Payload
           APP_PATH=$(find . -name "*.app" -type d | head -n 1)
