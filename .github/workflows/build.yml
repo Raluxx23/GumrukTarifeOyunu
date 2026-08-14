@@ -13,21 +13,28 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: |
-            8.0.x
-            9.0.x
+          dotnet-version: '8.0.x'
 
-      - name: Install MAUI Workload
-        run: dotnet workload install maui
+      - name: Install MAUI iOS Workload
+        run: dotnet workload install maui-ios
 
-      - name: Build and Package iOS IPA
+      - name: Build iOS App
         run: |
-          dotnet publish -f net8.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableCodeSigning=false -p:SupportedOSPlatformVersion=15.0 -p:TargetPlatformVersion=17.2 || dotnet publish -f net9.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:ArchiveOnBuild=true -p:EnableCodeSigning=false -p:SupportedOSPlatformVersion=15.0
+          dotnet build -f net8.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:EnableCodeSigning=false
+
+      - name: Create IPA Package
+        run: |
+          mkdir -p Payload
+          APP_PATH=$(find . -name "*.app" -type d | head -n 1)
+          if [ -n "$APP_PATH" ]; then
+            cp -r "$APP_PATH" Payload/
+            zip -r GumrukTarifeOyunu.ipa Payload
+          else
+            echo "App dosyasi bulunamadi!" && exit 1
+          fi
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
         with:
           name: GumrukTarifeOyunu-IPA
-          path: |
-            **/bin/Release/**/publish/*.ipa
-            **/bin/Release/**/publish/*.app
+          path: GumrukTarifeOyunu.ipa
