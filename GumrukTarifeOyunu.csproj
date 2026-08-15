@@ -16,9 +16,8 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 
-		<!-- Linker ve Xcode hatalarını tamamen kapatan kesin ayarlar -->
-		<PublishTrimmed>false</PublishTrimmed>
-		<RunAOTCompilation>false</RunAOTCompilation>
+		<!-- iOS derleyicisinin zorunlu kıldığı doğru linker ayarları -->
+		<PublishTrimmed>true</PublishTrimmed>
 		<MtouchLink>None</MtouchLink>
 		<_SuppressXcodeVersionCheck>true</_SuppressXcodeVersionCheck>
 		<ValidateXcodeVersion>false</ValidateXcodeVersion>
