@@ -20,14 +20,14 @@ jobs:
 
       - name: Build iOS App
         run: |
-          dotnet build -f net9.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:EnableCodeSigning=false -p:PublishTrimmed=true -p:MtouchLink=None -p:ValidateXcodeVersion=false -p:_SuppressXcodeVersionCheck=true
+          dotnet build -f net9.0-ios -c Release -p:RuntimeIdentifier=ios-arm64 -p:EnableCodeSigning=false -p:PublishTrimmed=true -p:MtouchLink=SdkOnly -p:ValidateXcodeVersion=false -p:_SuppressXcodeVersionCheck=true
 
       - name: Create IPA Package
         run: |
           mkdir -p Payload
           APP_PATH=$(find . -name "*.app" -type d | head -n 1)
           if [ -n "$APP_PATH" ]; then
-            echo "App dosyasi bulundu: $APP_PATH"
+            echo "App paketi bulundu: $APP_PATH"
             cp -r "$APP_PATH" Payload/
             zip -r GumrukTarifeOyunu.ipa Payload
           else
